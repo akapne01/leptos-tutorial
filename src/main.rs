@@ -21,6 +21,8 @@ fn App() -> impl IntoView {
     */
     let (count, set_count) = create_signal(0);
     let (x, set_x) = create_signal(0);
+    let double_count = move || count.get() * 2;
+    let html = "<p>This HTML will be injected.</p>";
 
     /*
         defines user interfaces using a JSX-like format via the view macro.
@@ -40,6 +42,7 @@ fn App() -> impl IntoView {
             gives us a mutable reference and mutates the value in place. Either one will 
             trigger a reactive update in our UI.
          */
+        <div>
         <button on:click=move |_| {
             set_count.update(|n| *n += 1);
         }
@@ -49,35 +52,38 @@ fn App() -> impl IntoView {
         >"Click Me: "{move || count.get()}
         </button>
 
+        <p>"Double Count: "{double_count}</p>
         <progress
-        max="50"
-        // signals are functions, so `value=count` and `value=move || count.get()`
-        // are interchangeable.
-        value=count
+            max="50"
+            // signals are functions, so `value=count` and `value=move || count.get()`
+            // are interchangeable.
+            value=double_count
     />
-
-        <button
-            on:click={move |_| {
-                set_x.update(|n| *n += 10);
-            }}
-            // set the `style` attribute
-            style="position: absolute"
-            // and toggle individual CSS properties with `style:`
-            style:left=move || format!("{}px", x.get() + 100)
-            style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
-            style:max-width="400px"
-            // Set a CSS variable for stylesheet use
-            style=("--columns", x)
-            >
-            "Click to Move"
-        </button>
+        </div>
         
-       
+       <div inner_html=html/>
     
+       <div>
+       <button
+           on:click={move |_| {
+               set_x.update(|n| *n += 10);
+           }}
+           // set the `style` attribute
+           style="position: absolute"
+           // and toggle individual CSS properties with `style:`
+           style:left=move || format!("{}px", x.get() + 100)
+           style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
+           style:max-width="400px"
+           // Set a CSS variable for stylesheet use
+           style=("--columns", x)
+           >
+           "Click to Move"
+       </button>
+       </div>
     }
 }
 
 fn main() {
     console_error_panic_hook::set_once();
-    mount_to_body(|| view! { <App/> })
+    leptos::mount_to_body(App);
 }
