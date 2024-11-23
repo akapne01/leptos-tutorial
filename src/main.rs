@@ -20,6 +20,7 @@ fn App() -> impl IntoView {
         In many cases, it is more efficient to use .with() or .update()
     */
     let (count, set_count) = create_signal(0);
+    let (x, set_x) = create_signal(0);
 
     /*
         defines user interfaces using a JSX-like format via the view macro.
@@ -41,8 +42,38 @@ fn App() -> impl IntoView {
          */
         <button on:click=move |_| {
             set_count.update(|n| *n += 1);
-        }>"Click Me: "{move || count.get()}
+        }
+        // the class: syntax reactively updates a single class
+        // here, we'll set the `red` class when `count` is odd
+        class:red=move || count.get() % 2 == 1
+        >"Click Me: "{move || count.get()}
         </button>
+
+        <progress
+        max="50"
+        // signals are functions, so `value=count` and `value=move || count.get()`
+        // are interchangeable.
+        value=count
+    />
+
+        <button
+            on:click={move |_| {
+                set_x.update(|n| *n += 10);
+            }}
+            // set the `style` attribute
+            style="position: absolute"
+            // and toggle individual CSS properties with `style:`
+            style:left=move || format!("{}px", x.get() + 100)
+            style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
+            style:max-width="400px"
+            // Set a CSS variable for stylesheet use
+            style=("--columns", x)
+            >
+            "Click to Move"
+        </button>
+        
+       
+    
     }
 }
 
