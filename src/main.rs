@@ -4,9 +4,11 @@ use leptos::*;
 #[component]
 fn ProgressBar(
     /// The maximum value of the progress bar.
-    #[prop(default = 100)] max: u16, // Optional, if not specified, default value is used
+    #[prop(default = 100)]
+    max: u16, // Optional, if not specified, default value is used
     /// How much progress should be displayed.
-    #[prop(into)] progress: Signal<i32> // Automatically calls .into() on the values passed
+    #[prop(into)]
+    progress: Signal<i32> // Automatically calls .into() on the values passed
     // Signal is an enumerated type: any kind of readable reactive signal.
     // MaybeSignal allows to use either static or reactive value.
 ) -> impl IntoView {
@@ -37,6 +39,22 @@ fn App() -> impl IntoView {
     let (x, set_x) = create_signal(0);
     let double_count = move || count.get() * 2;
     let html = "<p>This HTML will be injected.</p>";
+    let values = vec![0, 1, 2];
+    // create a list of 5 signals
+    let length = 5;
+    let counters = (1..=length).map(|idx| create_signal(idx));
+    
+    // each item manages a reactive view
+    // but the list itself will never change
+    let counter_buttons = counters
+        .map(|(count, set_count)| {
+            view! {
+                <li>
+                    <button on:click=move |_| set_count.update(|n| *n += 1)>{count}</button>
+                </li>
+            }
+        })
+        .collect_view();
     /*
         defines user interfaces using a JSX-like format via the view macro.
      */
@@ -79,7 +97,17 @@ fn App() -> impl IntoView {
             >
                 "Click to Move"
             </button>
+            <br />
         </div>
+
+        // Renders "012"
+        <p>{values.clone()}</p>
+
+        // We can wrap them in <li>. Displays as list of bullet points
+        // <ul>{values.into_iter().map(|n| view! { <li>{n}</li> }).collect::<Vec<_>>()}</ul>
+        // collect_view() collects any iterator T:IntoView into Vec<View>
+        <ul>{values.into_iter().map(|n| view! { <li>{n}</li> }).collect_view()}</ul>
+        <ul>{counter_buttons}</ul>
     }
 }
 
