@@ -1,18 +1,16 @@
 use leptos::*;
 
+/// Shows progress towards a goal.
 #[component]
 fn ProgressBar(
+    /// The maximum value of the progress bar.
     #[prop(default = 100)] max: u16, // Optional, if not specified, default value is used
+    /// How much progress should be displayed.
     #[prop(into)] progress: Signal<i32> // Automatically calls .into() on the values passed
     // Signal is an enumerated type: any kind of readable reactive signal.
-    // MaybeSignal allows to use either static or reactive value. 
+    // MaybeSignal allows to use either static or reactive value.
 ) -> impl IntoView {
-    view! {
-            <progress
-                max=max
-                value=progress
-            />
-        }
+    view! { <progress max=max value=progress /> }
 }
 
 /*
@@ -57,10 +55,10 @@ fn App() -> impl IntoView {
             </button>
 
             <p>"Count: "{count}</p>
-            <ProgressBar max=50 progress=count/>
+            <ProgressBar max=50 progress=count />
 
             <p>"Double Count: "{double_count}</p>
-            <ProgressBar max=50 progress=Signal::derive(double_count)/>
+            <ProgressBar max=50 progress=Signal::derive(double_count) />
         </div>
 
         <div inner_html=html />
