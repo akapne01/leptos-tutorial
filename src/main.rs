@@ -1,5 +1,15 @@
 use leptos::*;
 
+#[component]
+fn ProgressBar(#[prop(default = 100)] max: u16, progress: ReadSignal<i32>) -> impl IntoView {
+    view! {
+            <progress
+                max=max
+                value=progress
+            />
+        }
+}
+
 /*
     #[component] annotates a function that can be used as a component in Leptos application.
     Every component is a function that takes zero or more arguments of any type and returns
@@ -10,6 +20,7 @@ use leptos::*;
     Body of the component runs once. Typically used to create few reactive variables and 
     define any side effects that run in response to those values changing, and describe UI. 
 */
+
 #[component]
 fn App() -> impl IntoView {
     /*  
@@ -23,7 +34,6 @@ fn App() -> impl IntoView {
     let (x, set_x) = create_signal(0);
     let double_count = move || count.get() * 2;
     let html = "<p>This HTML will be injected.</p>";
-
     /*
         defines user interfaces using a JSX-like format via the view macro.
      */
@@ -41,13 +51,11 @@ fn App() -> impl IntoView {
                 {move || count.get()}
             </button>
 
+            <p>"Count: "{count}</p>
+            <ProgressBar max=50 progress=count/>
+
             <p>"Double Count: "{double_count}</p>
-            <progress
-                max="50"
-                // signals are functions, so `value=count` and `value=move || count.get()`
-                // are interchangeable.
-                value=double_count
-            />
+            // <ProgressBar progress=double_count/>
         </div>
 
         <div inner_html=html />
