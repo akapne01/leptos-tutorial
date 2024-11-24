@@ -28,58 +28,47 @@ fn App() -> impl IntoView {
         defines user interfaces using a JSX-like format via the view macro.
      */
     view! {
-        /*
-            Defines a click event listener
-            Closures are used to tell the leptos framework that this is something
-            that can change.
-            On click a targeted update is made, only changing this one thing, nothing else.
-            Only functions are reactive!!!
-            {count} passes in a function, telling the framework to update the view every time 
-            count changes. 
-            {count()} accesses the value of count once, and passes an i32 into the view, 
-            rendering it once, unreactively.
-            You can see here that while set_count just sets the value, set_count.update() 
-            gives us a mutable reference and mutates the value in place. Either one will 
-            trigger a reactive update in our UI.
-         */
         <div>
-        <button on:click=move |_| {
-            set_count.update(|n| *n += 1);
-        }
-        // the class: syntax reactively updates a single class
-        // here, we'll set the `red` class when `count` is odd
-        class:red=move || count.get() % 2 == 1
-        >"Click Me: "{move || count.get()}
-        </button>
+            <button
+                on:click=move |_| {
+                    set_count.update(|n| *n += 1);
+                }
+                // the class: syntax reactively updates a single class
+                // here, we'll set the `red` class when `count` is odd
+                class:red=move || count.get() % 2 == 1
+            >
+                "Click Me: "
+                {move || count.get()}
+            </button>
 
-        <p>"Double Count: "{double_count}</p>
-        <progress
-            max="50"
-            // signals are functions, so `value=count` and `value=move || count.get()`
-            // are interchangeable.
-            value=double_count
-    />
+            <p>"Double Count: "{double_count}</p>
+            <progress
+                max="50"
+                // signals are functions, so `value=count` and `value=move || count.get()`
+                // are interchangeable.
+                value=double_count
+            />
         </div>
-        
-       <div inner_html=html/>
-    
-       <div>
-       <button
-           on:click={move |_| {
-               set_x.update(|n| *n += 10);
-           }}
-           // set the `style` attribute
-           style="position: absolute"
-           // and toggle individual CSS properties with `style:`
-           style:left=move || format!("{}px", x.get() + 100)
-           style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
-           style:max-width="400px"
-           // Set a CSS variable for stylesheet use
-           style=("--columns", x)
-           >
-           "Click to Move"
-       </button>
-       </div>
+
+        <div inner_html=html />
+
+        <div>
+            <button
+                on:click=move |_| {
+                    set_x.update(|n| *n += 10);
+                }
+                // set the `style` attribute
+                style="position: absolute"
+                // and toggle individual CSS properties with `style:`
+                style:left=move || format!("{}px", x.get() + 100)
+                style:background-color=move || format!("rgb({}, {}, 100)", x.get(), 100)
+                style:max-width="400px"
+                // Set a CSS variable for stylesheet use
+                style=("--columns", x)
+            >
+                "Click to Move"
+            </button>
+        </div>
     }
 }
 
